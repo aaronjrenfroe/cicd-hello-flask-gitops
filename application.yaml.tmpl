@@ -2,34 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-world
+  name: hello-flask
 spec:
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
-      app: hello-world
+      app: hello-flask
   template:
     metadata:
       labels:
-        app: hello-world
+        app: hello-flask
     spec:
       containers:
       - image: "$({ .imageName })"
-        name: hello-world
+        name: hello-flask
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-world
+  name: hello-flask
 spec:
   type: LoadBalancer
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 5000
   selector:
-    app: hello-world
+    app: hello-flask
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -43,15 +43,15 @@ metadata:
     traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
   generation: 1
   labels:
-    app.kubernetes.io/instance: hello-world
+    app.kubernetes.io/instance: hello-flask
     app.kubernetes.io/managed-by: Tiller
-    app.kubernetes.io/name: hello-world
-  name: hello-world
+    app.kubernetes.io/name: hello-flask
+  name: hello-flask
 spec:
   rules:
   - http:
       paths:
       - backend:
-          serviceName: hello-world
+          serviceName: hello-flask
           servicePort: 80
-        path: /hello-world
+        path: /hello-flask
